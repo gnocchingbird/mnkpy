@@ -41,7 +41,11 @@ class Game(object):
                         pieces[i] = 2
                     case 0:
                         pieces[i] = 0
-                if p1 == self.k or p2 == self.k:
+                if p1 == self.k:
+                    self.winner = 1
+                    return True
+                if p2 == self.k:
+                    self.winner = 2
                     return True
                 
                 i = (i + 1) % self.k
