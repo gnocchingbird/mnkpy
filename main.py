@@ -11,20 +11,49 @@ class Game(object):
 
     def __repr__(self):
         return self.board.__repr__()
+
+    def is_over(self) -> bool:
+        return self.is_full() or self.is_won()
     
     def is_full(self) -> bool:
         shape = self.board.shape
         return len(np.flatnonzero(self.board)) == shape[0] * shape[1] # as many nonzero fields as existing fields
 
     def is_won(self) -> bool:
+        for slice in self.slices:
+            print(slice)
+            pieces = [0 for _ in range(self.k)]
+            p1 = 0
+            p2 = 0
+            i = 0
+            for x, y in slice:
+                print(pieces, i)
+                if pieces[i] == 1:
+                    p1 -= 1
+                if pieces[i] == 2:
+                    p2 -= 1
+                match self.board[y, x]:
+                    case 1:
+                        p1 += 1
+                        pieces[i] = 1
+                    case 2:
+                        p2 += 1
+                        pieces[i] = 2
+                    case 0:
+                        pieces[i] = 0
+                if p1 == self.k or p2 == self.k:
+                    return True
+                
+                i = (i + 1) % self.k
+        
         return False
 
     def place(self, x: int, y: int, player: int) -> bool:
-        if self.board[x, y] != 0:
-            raise(f"Illegal move! ({x},{y}) is already occupied by player {self.board[x, y]}!")
+        if self.board[y, x] != 0:
+            raise(f"Illegal move! ({x},{y}) is already occupied by player {self.board[y, x]}!")
             return False
         else:
-            self.board[x, y] = player
+            self.board[y, x] = player
 
     def slice(self, m: int, n: int, k: int) -> None:
         slices = []
@@ -98,20 +127,23 @@ class Game(object):
 
     
 
-
-    
-
 if __name__ == "__main__":
     start_time = time.monotonic()
     game = Game(4, 5, 3)
-    game.board = np.arange(20).reshape((4, 5))
-    game.board[1, 2] = 1
-    print(game.is_full())
+    #game.board = np.arange(20).reshape((4, 5))
+    #game.board[0, 0] = 1
+    print(game.is_over())
     print(game)
-    print(game.slices)
-    for slice in game.slices:
-        x, y = list(zip(*slice))
-        print(game.board[[y, x]])
+    #print(game.slices)
+    #for slice in game.slices:
+    #    x, y = list(zip(*slice))
+    #    print(game.board[y, x])
+    game.place(0, 1, 1)
+    game.place(1, 2, 1)
+    game.place(2, 3, 1)
+    print(game)
+    print(game.is_won())
+    
 
 
 
