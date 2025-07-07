@@ -1,6 +1,4 @@
 import numpy as np
-import time
-from datetime import timedelta
 
 class Game(object):
     def __init__(self, m: int, n: int, k: int):
@@ -134,26 +132,4 @@ class Game(object):
     
 
 if __name__ == "__main__":
-    start_time = time.monotonic()
-    game = Game(4, 5, 3)
-    #game.board = np.arange(20).reshape((4, 5))
-    #game.board[0, 0] = 1
-    print(game.is_over())
-    print(game)
-    #print(game.slices)
-    #for slice in game.slices:
-    #    x, y = list(zip(*slice))
-    #    print(game.board[y, x])
-    game.place(0, 1, 1)
-    game.place(1, 2, 1)
-    game.place(2, 3, 1)
-    print(game)
-    print(game.is_won())
-    
-
-
-
-
-
-
-    print(timedelta(seconds=time.monotonic() - start_time))
+    pass
