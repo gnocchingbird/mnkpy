@@ -2,20 +2,22 @@ from game import Game
 from player import Player
 
 class Session(object):
-    def __init__(self, p1: Player, p2: Player, p1_first: bool, m: int = 3, n: int = 3, k: int = 3):
+    def __init__(self, p1: Player, p2: Player, p1_first: bool, m: int = 3, n: int = 3, k: int = 3, drop_pieces: bool = False):
         self.p1 = p1
         self.p2 = p2
         self.turn = 1 if p1_first else 2
         self.game = Game(m, n, k)
         self.move_num = 1
+        self.drop_pieces = drop_pieces
 
     def __repr__(self):
         return f"Game between {self.p1} and {self.p2}:\n{self.game}"
 
-    def new_game(self, p1_first: bool, m: int = 3, n: int = 3, k: int = 3):
+    def new_game(self, p1_first: bool, m: int = 3, n: int = 3, k: int = 3, drop_pieces: bool = False):
         self.game = Game(m, n, k)
         self.turn = 1 if p1_first else 2
         self.move_num = 1
+        self.drop_pieces = drop_pieces
 
     def parse_move(self, inp: str) -> tuple:
         x, y = inp.split(",")
@@ -32,6 +34,13 @@ class Session(object):
                 case 2:
                     x, y = self.parse_move(input(f"{self.move_num}:\t{self.p2}'s move (x,y):\n"))
             try:
+                if self.drop_pieces:
+                    y_ = self.game.m - 1
+                    while y_ > 0:
+                        if self.game.board[y_, x] == 0:
+                            y = y_
+                            break
+                        y_ -= 1
                 self.game.place(x, y, self.turn)
                 illegal = False
             except IndexError:
@@ -64,6 +73,6 @@ class Session(object):
 
     
 if __name__ == "__main__":
-    s = Session(Player("nick"), Player("george"), True, 3, 5, 3)
+    s = Session(Player("nick"), Player("george"), True, 3, 5, 3, True)
     print(s)
     s.loop()
